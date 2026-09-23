@@ -155,6 +155,24 @@
         <!-- MANUAL CUT SETTINGS (Hidden initially) -->
         <div id="manual-settings-container" class="hidden flex-col gap-4">
             <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between font-mono text-[11px]">
+                    <span class="text-gray-900 font-bold tracking-wide uppercase">NUMBER OF CLIPS</span>
+                    <span id="manual-target-status" class="text-brand-mint font-bold text-[10px]">0 OF 1 ADDED</span>
+                </div>
+
+                <input type="hidden" id="manual-clip-target" value="1">
+
+                <div class="grid grid-cols-5 gap-1.5 bg-black/5 p-1.5 rounded-lg border border-black/10" aria-label="Number of manual clips">
+                    <button class="manual-clip-opt py-1.5 rounded bg-brand-mint text-white font-bold shadow text-center transition-all cursor-pointer" data-value="1" type="button" aria-pressed="true">1</button>
+                    <button class="manual-clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="2" type="button" aria-pressed="false">2</button>
+                    <button class="manual-clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="3" type="button" aria-pressed="false">3</button>
+                    <button class="manual-clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="4" type="button" aria-pressed="false">4</button>
+                    <button class="manual-clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="5" type="button" aria-pressed="false">5</button>
+                </div>
+                <p class="font-mono text-[10px] text-text-muted">Add one timestamp range for each clip.</p>
+            </section>
+
+            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
                 <div class="flex items-center justify-between font-mono text-[11px] mb-1">
                     <span class="text-gray-900 font-bold tracking-wide uppercase">ADD MANUAL CUT</span>
                     <span class="text-brand-mint font-bold text-[10px]">MM:SS / HH:MM:SS</span>
