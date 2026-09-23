@@ -29,36 +29,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const manualCutsList = document.getElementById('manual-cuts-list');
         const manualCutCount = document.getElementById('manual-cut-count');
         const emptyCutsMsg = document.getElementById('empty-cuts-msg');
+        const manualClipCount = document.getElementById('manual-clip-count');
+        const manualCountDown = document.getElementById('manual-count-down');
+        const manualCountUp = document.getElementById('manual-count-up');
 
         let currentMode = 'ai'; // 'ai' or 'manual'
         let manualCuts = [];
 
+        const setMode = (mode) => {
+            currentMode = mode;
+            const isManual = mode === 'manual';
+
+            modeAiBtn?.classList.toggle('bg-brand-mint', !isManual);
+            modeAiBtn?.classList.toggle('text-white', !isManual);
+            modeAiBtn?.classList.toggle('font-bold', !isManual);
+            modeAiBtn?.classList.toggle('shadow-md', !isManual);
+            modeAiBtn?.classList.toggle('text-text-muted', isManual);
+            modeAiBtn?.classList.toggle('font-semibold', isManual);
+            modeAiBtn?.setAttribute('aria-pressed', String(!isManual));
+
+            modeManualBtn?.classList.toggle('bg-brand-mint', isManual);
+            modeManualBtn?.classList.toggle('text-white', isManual);
+            modeManualBtn?.classList.toggle('font-bold', isManual);
+            modeManualBtn?.classList.toggle('shadow-md', isManual);
+            modeManualBtn?.classList.toggle('text-text-muted', !isManual);
+            modeManualBtn?.classList.toggle('font-semibold', !isManual);
+            modeManualBtn?.setAttribute('aria-pressed', String(isManual));
+
+            if (manualSettings) {
+                manualSettings.classList.toggle('hidden', !isManual);
+                manualSettings.classList.toggle('flex', isManual);
+                manualSettings.setAttribute('aria-hidden', String(!isManual));
+            }
+            if (clipQuantityBadge) clipQuantityBadge.textContent = isManual ? 'CHOOSE BELOW' : 'AI DETECT';
+            if (submitBtnText) submitBtnText.textContent = isManual ? 'EXTRACT MANUAL CLIPS' : 'GENERATE VIRAL CLIPS';
+            if (isManual) manualSettings?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+
         // Mode Toggling Logic
         if (modeAiBtn && modeManualBtn) {
-            modeAiBtn.addEventListener('click', () => {
-                currentMode = 'ai';
-                modeAiBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md cursor-pointer';
-                modeManualBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all cursor-pointer';
-                if (manualSettings) {
-                    manualSettings.classList.add('hidden');
-                    manualSettings.classList.remove('flex');
-                }
-                if (clipQuantityBadge) clipQuantityBadge.textContent = 'AI DETECT';
-                if (submitBtnText) submitBtnText.textContent = 'GENERATE VIRAL CLIPS';
-            });
-
-            modeManualBtn.addEventListener('click', () => {
-                currentMode = 'manual';
-                modeManualBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md cursor-pointer';
-                modeAiBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all cursor-pointer';
-                if (manualSettings) {
-                    manualSettings.classList.remove('hidden');
-                    manualSettings.classList.add('flex');
-                }
-                if (clipQuantityBadge) clipQuantityBadge.textContent = 'MANUAL CHOSEN';
-                if (submitBtnText) submitBtnText.textContent = 'EXTRACT MANUAL CLIPS';
-            });
+            modeAiBtn.addEventListener('click', () => setMode('ai'));
+            modeManualBtn.addEventListener('click', () => setMode('manual'));
         }
+
+        const setManualClipCount = (value) => {
+            const count = Math.min(20, Math.max(1, Number.parseInt(value, 10) || 1));
+            if (manualClipCount) manualClipCount.value = String(count);
+            if (numClipsInput) numClipsInput.value = String(count);
+            if (splitCountText) splitCountText.textContent = String(count);
+            clipButtons.forEach(button => {
+                const selected = button.dataset.value === String(count);
+                button.classList.toggle('bg-brand-mint', selected);
+                button.classList.toggle('text-white', selected);
+                button.classList.toggle('font-bold', selected);
+                button.classList.toggle('shadow', selected);
+                button.classList.toggle('text-text-muted', !selected);
+                button.classList.toggle('font-semibold', !selected);
+            });
+        };
+
+        manualClipCount?.addEventListener('input', (event) => setManualClipCount(event.target.value));
+        manualClipCount?.addEventListener('blur', (event) => setManualClipCount(event.target.value));
+        manualCountDown?.addEventListener('click', () => setManualClipCount((Number(manualClipCount?.value) || 1) - 1));
+        manualCountUp?.addEventListener('click', () => setManualClipCount((Number(manualClipCount?.value) || 1) + 1));
 
         // Restrict typing to digits and colons only
         const restrictToTimeFormat = (e) => {
@@ -171,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (splitCountText) {
                         splitCountText.textContent = (val === 'auto') ? '3' : val;
                     }
+                    if (manualClipCount) manualClipCount.value = (val === 'auto') ? '3' : val;
                 });
             });
         }
@@ -753,8 +787,6 @@ function renderClips(clips, zipUrl = null) {
     } else {
         if (clipCountText) clipCountText.textContent = 'RESULTS / 0 CLIPS';
         clipsContainer.innerHTML = '<p class="font-mono text-text-muted text-center py-8">No clips were generated. Please try again.</p>';
-    }
-}
     }
 }
 

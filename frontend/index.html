@@ -70,10 +70,10 @@
 
         <!-- MODE SELECTOR STRIP -->
         <div class="glass-panel rounded-xl p-1 flex items-center font-display text-sm relative mb-2">
-            <button id="mode-ai-btn" class="flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md" type="button">
+            <button id="mode-ai-btn" class="flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md" type="button" aria-pressed="true" aria-controls="manual-settings-container">
                 AI AUTO DETECT
             </button>
-            <button id="mode-manual-btn" class="flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all" type="button">
+            <button id="mode-manual-btn" class="flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all" type="button" aria-pressed="false" aria-controls="manual-settings-container">
                 MANUAL CUT
             </button>
         </div>
@@ -153,7 +153,7 @@
         </div>
 
         <!-- MANUAL CUT SETTINGS (Shown only in Manual Cut mode) -->
-        <div id="manual-settings-container" class="hidden flex-col gap-4">
+        <div id="manual-settings-container" class="hidden flex-col gap-4" aria-hidden="true">
             <section class="glass-panel rounded-xl p-4 flex flex-col gap-3 border border-brand-mint/30">
                 <div class="flex items-center justify-between font-mono text-[11px] mb-1">
                     <span class="text-gray-900 font-bold tracking-wide uppercase flex items-center gap-1.5">
@@ -161,6 +161,19 @@
                         <span>CUSTOM TIMESTAMP CUTS</span>
                     </span>
                     <span class="text-brand-mint font-bold text-[10px]">MM:SS / HH:MM:SS</span>
+                </div>
+
+                <div class="rounded-lg border border-black/10 bg-black/5 p-3 font-mono">
+                    <label for="manual-clip-count" class="mb-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-wide">
+                        <span class="text-gray-900">Number of clips</span>
+                        <span class="text-brand-mint">1–20 clips</span>
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <button id="manual-count-down" type="button" class="h-10 w-10 rounded-lg border border-black/10 bg-white text-lg font-bold text-gray-900 hover:border-brand-mint focus:outline-none focus:ring-2 focus:ring-brand-mint/30" aria-label="Decrease number of clips">−</button>
+                        <input id="manual-clip-count" type="number" min="1" max="20" step="1" value="3" inputmode="numeric" class="h-10 min-w-0 flex-1 rounded-lg border border-black/10 bg-white px-3 text-center text-sm font-bold text-gray-900 focus:border-brand-mint focus:outline-none focus:ring-2 focus:ring-brand-mint/20" aria-describedby="manual-count-help">
+                        <button id="manual-count-up" type="button" class="h-10 w-10 rounded-lg border border-black/10 bg-white text-lg font-bold text-gray-900 hover:border-brand-mint focus:outline-none focus:ring-2 focus:ring-brand-mint/30" aria-label="Increase number of clips">+</button>
+                    </div>
+                    <p id="manual-count-help" class="mt-2 text-[9px] leading-relaxed text-text-muted">Used when auto-splitting. Adding timestamps manually uses the number of timestamps you queue.</p>
                 </div>
                 
                 <div class="flex items-center gap-2 font-mono text-[11px]">
@@ -181,7 +194,7 @@
                     </button>
                     <button type="button" id="auto-split-cuts-btn" class="bg-emerald-50 hover:bg-emerald-100 text-brand-mint border border-brand-mint font-display font-bold text-xs py-2.5 rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
-                        <span>AUTO-SPLIT <span id="split-count-text">2</span> CUTS</span>
+                        <span>AUTO-SPLIT <span id="split-count-text">3</span> CUTS</span>
                     </button>
                 </div>
                 
