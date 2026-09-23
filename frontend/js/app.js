@@ -14,14 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const numClipsInput = document.getElementById('num-clips');
         const aspectButtons = document.querySelectorAll('.aspect-opt');
         const aspectRatioInput = document.getElementById('aspect-ratio');
+        const clipQuantityBadge = document.getElementById('clip-quantity-badge');
         
         // Manual Cut Elements
         const modeAiBtn = document.getElementById('mode-ai-btn');
         const modeManualBtn = document.getElementById('mode-manual-btn');
-        const aiSettings = document.getElementById('ai-settings-container');
         const manualSettings = document.getElementById('manual-settings-container');
         const submitBtnText = document.getElementById('submit-btn-text');
         const addCutBtn = document.getElementById('add-manual-cut-btn');
+        const autoSplitBtn = document.getElementById('auto-split-cuts-btn');
+        const splitCountText = document.getElementById('split-count-text');
         const manualStartInput = document.getElementById('manual-start');
         const manualEndInput = document.getElementById('manual-end');
         const manualCutsList = document.getElementById('manual-cuts-list');
@@ -35,22 +37,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modeAiBtn && modeManualBtn) {
             modeAiBtn.addEventListener('click', () => {
                 currentMode = 'ai';
-                modeAiBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md';
-                modeManualBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all';
-                aiSettings.classList.remove('hidden');
-                aiSettings.classList.add('flex');
-                manualSettings.classList.add('hidden');
-                manualSettings.classList.remove('flex');
+                modeAiBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md cursor-pointer';
+                modeManualBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all cursor-pointer';
+                if (manualSettings) {
+                    manualSettings.classList.add('hidden');
+                    manualSettings.classList.remove('flex');
+                }
+                if (clipQuantityBadge) clipQuantityBadge.textContent = 'AI DETECT';
                 if (submitBtnText) submitBtnText.textContent = 'GENERATE VIRAL CLIPS';
             });
+
             modeManualBtn.addEventListener('click', () => {
                 currentMode = 'manual';
-                modeManualBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md';
-                modeAiBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all';
-                manualSettings.classList.remove('hidden');
-                manualSettings.classList.add('flex');
-                aiSettings.classList.add('hidden');
-                aiSettings.classList.remove('flex');
+                modeManualBtn.className = 'flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md cursor-pointer';
+                modeAiBtn.className = 'flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all cursor-pointer';
+                if (manualSettings) {
+                    manualSettings.classList.remove('hidden');
+                    manualSettings.classList.add('flex');
+                }
+                if (clipQuantityBadge) clipQuantityBadge.textContent = 'MANUAL CHOSEN';
                 if (submitBtnText) submitBtnText.textContent = 'EXTRACT MANUAL CLIPS';
             });
         }
@@ -71,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Basic validation (regex for MM:SS or HH:MM:SS)
                 const timeRegex = /^(\d{1,2}:)?([0-5]?\d):([0-5]?\d)$/;
                 if (!timeRegex.test(start) || !timeRegex.test(end)) {
-                    alert('Please enter valid timestamps (MM:SS or HH:MM:SS)');
+                    alert('Please enter valid timestamps in MM:SS or HH:MM:SS format (e.g. 00:00 to 00:30)');
                     return;
                 }
                 
@@ -81,6 +86,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 manualEndInput.value = '';
             });
         }
+
+        // Auto-split N equal cuts logic
+        if (autoSplitBtn) {
+            autoSplitBtn.addEventListener('click', () => {
+                const val = numClipsInput ? numClipsInput.value : 'auto';
+                const count = (val === 'auto') ? 3 : parseInt(val, 10);
+                
+                manualCuts = [];
+                const defaultTotalSec = 120; // Default baseline video duration estimate
+                const clipLen = 30;
+                const interval = (defaultTotalSec - clipLen) / maxVal(1, count);
+                
+                for (let i = 0; i < count; i++) {
+                    const stSec = Math.floor(i * interval);
+                    const etSec = Math.min(defaultTotalSec, stSec + clipLen);
+                    
+                    const formatTs = (sec) => {
+                        const m = Math.floor(sec / 60);
+                        const s = sec % 60;
+                        return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                    };
+                    
+                    manualCuts.push({
+                        start_time: formatTs(stSec),
+                        end_time: formatTs(etSec)
+                    });
+                }
+                updateManualCutsUI();
+            });
+        }
+
+        function maxVal(a, b) { return a > b ? a : b; }
 
         function removeCut(index) {
             manualCuts.splice(index, 1);
@@ -93,24 +130,28 @@ document.addEventListener('DOMContentLoaded', () => {
         function updateManualCutsUI() {
             if (manualCutCount) manualCutCount.textContent = manualCuts.length;
             if (manualCuts.length === 0) {
-                manualCutsList.innerHTML = '<p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No cuts added yet.</p>';
+                if (manualCutsList) {
+                    manualCutsList.innerHTML = '<p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No timestamps added. (Auto-split will generate cuts based on selected clip quantity if left empty).</p>';
+                }
             } else {
-                manualCutsList.innerHTML = '';
-                manualCuts.forEach((cut, index) => {
-                    const el = document.createElement('div');
-                    el.className = 'flex items-center justify-between bg-black/5 border border-black/10 rounded-md px-3 py-2 text-[10px] text-gray-900';
-                    el.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-brand-mint text-[14px]">cut</span>
-                            <span class="font-bold">CLIP ${index + 1}</span>
-                            <span class="text-text-muted">— ${cut.start_time} TO ${cut.end_time}</span>
-                        </div>
-                        <button type="button" onclick="removeCut(${index})" class="text-text-muted hover:text-red-500 transition-colors">
-                            <span class="material-symbols-outlined text-[16px]">delete</span>
-                        </button>
-                    `;
-                    manualCutsList.appendChild(el);
-                });
+                if (manualCutsList) {
+                    manualCutsList.innerHTML = '';
+                    manualCuts.forEach((cut, index) => {
+                        const el = document.createElement('div');
+                        el.className = 'flex items-center justify-between bg-black/5 border border-black/10 rounded-md px-3 py-2 text-[10px] text-gray-900';
+                        el.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-brand-mint text-[14px]">cut</span>
+                                <span class="font-bold">CLIP ${index + 1}</span>
+                                <span class="text-text-muted">— ${cut.start_time} TO ${cut.end_time}</span>
+                            </div>
+                            <button type="button" onclick="removeCut(${index})" class="text-text-muted hover:text-red-500 transition-colors cursor-pointer">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                            </button>
+                        `;
+                        manualCutsList.appendChild(el);
+                    });
+                }
             }
         }
 
@@ -124,7 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     btn.classList.add('bg-brand-mint', 'text-white', 'font-bold', 'shadow');
                     btn.classList.remove('text-text-muted', 'font-semibold');
-                    numClipsInput.value = btn.dataset.value;
+                    
+                    const val = btn.dataset.value;
+                    numClipsInput.value = val;
+                    if (splitCountText) {
+                        splitCountText.textContent = (val === 'auto') ? '3' : val;
+                    }
                 });
             });
         }
@@ -169,17 +215,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
+                const numClips = numClipsInput ? numClipsInput.value : 'auto';
+                const aspectRatio = aspectRatioInput ? aspectRatioInput.value : '9:16';
+
+                // In manual mode, if user didn't add explicit timestamps, auto-generate based on clip count
                 if (currentMode === 'manual' && manualCuts.length === 0) {
-                    alert('Please add at least one timestamp range before exporting.');
-                    return;
+                    const count = (numClips === 'auto') ? 3 : parseInt(numClips, 10);
+                    const defaultTotalSec = 120;
+                    const clipLen = 30;
+                    const interval = (defaultTotalSec - clipLen) / maxVal(1, count);
+                    
+                    for (let i = 0; i < count; i++) {
+                        const stSec = Math.floor(i * interval);
+                        const etSec = Math.min(defaultTotalSec, stSec + clipLen);
+                        const formatTs = (sec) => {
+                            const m = Math.floor(sec / 60);
+                            const s = sec % 60;
+                            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                        };
+                        manualCuts.push({
+                            start_time: formatTs(stSec),
+                            end_time: formatTs(etSec)
+                        });
+                    }
                 }
 
                 // Hide the upload form completely, show processing state
                 uploadForm.classList.add('hidden');
                 processingState.classList.remove('hidden');
 
-                const numClips = numClipsInput ? numClipsInput.value : 'auto';
-                const aspectRatio = aspectRatioInput ? aspectRatioInput.value : 'original';
                 const formData = new FormData();
                 formData.append('file', selectedFile);
 
@@ -198,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         progressText.textContent = 'Preparing Manual Extraction...';
                         localStorage.setItem('manualCuts', JSON.stringify(manualCuts));
                         setTimeout(() => {
-                            window.location.href = `/results.html?videoId=${encodeURIComponent(data.video_id)}&mode=manual&aspectRatio=original`;
+                            window.location.href = `/results.html?videoId=${encodeURIComponent(data.video_id)}&mode=manual&aspectRatio=${aspectRatio}`;
                         }, 600);
                     } else {
                         progressText.textContent = 'Preparing Gemini AI Ingestion...';

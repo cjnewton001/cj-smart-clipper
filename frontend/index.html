@@ -105,8 +105,8 @@
             </div>
         </section>
 
-        <!-- AI MODE SETTINGS -->
-        <div id="ai-settings-container" class="flex flex-col gap-4">
+        <!-- COMMON CONFIGURATION SETTINGS (ASPECT RATIO & TARGET CLIP COUNT) -->
+        <div id="common-settings-container" class="flex flex-col gap-4">
             <!-- ASPECT RATIO PRESET SELECTOR -->
             <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
                 <div class="flex items-center justify-between font-mono text-[11px]">
@@ -135,8 +135,8 @@
             <!-- EXTRACT TARGET QUANTITY -->
             <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
                 <div class="flex items-center justify-between font-mono text-[11px]">
-                    <span class="text-gray-900 font-bold tracking-wide uppercase">TARGET HIGHLIGHT CLIPS</span>
-                    <span class="text-brand-mint font-bold text-[10px]">AI DETECT</span>
+                    <span class="text-gray-900 font-bold tracking-wide uppercase">TARGET CLIPS QUANTITY</span>
+                    <span id="clip-quantity-badge" class="text-brand-mint font-bold text-[10px]">AI DETECT</span>
                 </div>
 
                 <input type="hidden" id="num-clips" value="auto">
@@ -152,11 +152,14 @@
             </section>
         </div>
 
-        <!-- MANUAL CUT SETTINGS (Hidden initially) -->
+        <!-- MANUAL CUT SETTINGS (Shown only in Manual Cut mode) -->
         <div id="manual-settings-container" class="hidden flex-col gap-4">
-            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3 border border-brand-mint/30">
                 <div class="flex items-center justify-between font-mono text-[11px] mb-1">
-                    <span class="text-gray-900 font-bold tracking-wide uppercase">ADD MANUAL CUT</span>
+                    <span class="text-gray-900 font-bold tracking-wide uppercase flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-brand-mint text-[16px]">cut</span>
+                        <span>CUSTOM TIMESTAMP CUTS</span>
+                    </span>
                     <span class="text-brand-mint font-bold text-[10px]">MM:SS / HH:MM:SS</span>
                 </div>
                 
@@ -171,10 +174,16 @@
                     </div>
                 </div>
                 
-                <button type="button" id="add-manual-cut-btn" class="mt-1 w-full bg-gray-900 hover:bg-gray-800 text-white font-display font-bold text-xs py-2.5 rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md">
-                    <span class="material-symbols-outlined text-[16px]">add</span>
-                    <span>ADD CUT TIMESTAMPS</span>
-                </button>
+                <div class="grid grid-cols-2 gap-2 mt-1">
+                    <button type="button" id="add-manual-cut-btn" class="bg-gray-900 hover:bg-gray-800 text-white font-display font-bold text-xs py-2.5 rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">add</span>
+                        <span>ADD TIMESTAMP</span>
+                    </button>
+                    <button type="button" id="auto-split-cuts-btn" class="bg-emerald-50 hover:bg-emerald-100 text-brand-mint border border-brand-mint font-display font-bold text-xs py-2.5 rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                        <span>AUTO-SPLIT <span id="split-count-text">2</span> CUTS</span>
+                    </button>
+                </div>
                 
                 <!-- Added Cuts List -->
                 <div class="mt-2 border-t border-black/10 pt-3">
@@ -184,7 +193,7 @@
                     </div>
                     <div id="manual-cuts-list" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
                         <!-- Items injected here by JS -->
-                        <p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No cuts added yet.</p>
+                        <p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No timestamps added. (Auto-split will generate cuts based on selected clip quantity if left empty).</p>
                     </div>
                 </div>
             </section>
