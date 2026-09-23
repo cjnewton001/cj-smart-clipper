@@ -1,0 +1,18 @@
+[build]
+  # Publish directory containing frontend static files
+  publish = "frontend"
+  command = "echo 'Netlify build ready for Smart Clipper Frontend!'"
+
+# Single Page Application (SPA) routing fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Proxy rules if API is hosted on Render, Railway, or Fly.io
+# Replace the 'to' address with your live backend API domain if deployed separately
+# Example: to = "https://cj-smart-clipper-backend.onrender.com/api/:splat"
+[[redirects]]
+  from = "/api/*"
+  to = "/api/:splat"
+  status = 200

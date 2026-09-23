@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart Clipper — Engine Diagnostics</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                "brand-mint": "#00D670",
+                "brand-dark": "#F8FAFC",
+                "surface-card": "rgba(255, 255, 255, 0.85)",
+                "surface-border": "rgba(0, 0, 0, 0.08)",
+                "text-muted": "#64748B"
+              },
+              fontFamily: {
+                sans: ["Plus Jakarta Sans", "sans-serif"],
+                mono: ["Fira Code", "monospace"],
+                display: ["Outfit", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-gray-900 min-h-screen flex flex-col font-sans antialiased pb-28 selection:bg-brand-mint selection:text-white">
+
+<!-- TOP HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-3.5 glass-panel border-b border-black/5">
+    <div class="flex items-center gap-3">
+        <span class="font-display font-extrabold text-base tracking-wider text-gray-900 uppercase">SMART CLIPPER</span>
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-brand-mint">
+            <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+            <span class="font-mono text-[10px] font-bold tracking-wider text-brand-mint uppercase">ENGINE HEALTH</span>
+        </div>
+    </div>
+    <div class="w-8 h-8 rounded-full border border-black/10 bg-black/5 flex items-center justify-center text-text-muted hover:text-gray-900 cursor-pointer transition-colors">
+        <span class="material-symbols-outlined text-[18px]">person</span>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 w-full max-w-lg mx-auto px-4 pt-20 flex flex-col gap-4">
+
+    <!-- ENGINE STATUS STRIP -->
+    <div class="flex items-center justify-between font-mono text-[11px]">
+        <span class="text-gray-900 font-bold tracking-wide">SYSTEM DIAGNOSTICS & METRICS</span>
+        <span id="engine-health-badge" class="px-2.5 py-1 rounded-full bg-emerald-50 text-brand-mint border border-brand-mint font-bold text-[10px]">ONLINE 100%</span>
+    </div>
+
+    <!-- ENGINE CARDS -->
+    <div class="flex flex-col gap-4">
+
+        <!-- GEMINI API HEALTH -->
+        <section class="glass-panel rounded-xl p-4 flex flex-col gap-3 font-mono text-[11px]">
+            <div class="flex items-center justify-between border-b border-black/10 pb-2.5">
+                <div class="flex items-center gap-2 text-gray-900 font-bold uppercase">
+                    <span class="material-symbols-outlined text-brand-mint text-[20px]">api</span>
+                    <span>AI MODEL & API HEALTH</span>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-brand-mint border border-brand-mint text-[10px] font-bold">200 OK</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 text-[10px]">
+                <div class="bg-black/5 border border-black/10 p-3 rounded-lg">
+                    <div class="text-text-muted uppercase">ACTIVE MODEL</div>
+                    <div class="text-brand-mint font-bold text-[12px] mt-0.5">gemini-3.6-flash</div>
+                </div>
+                <div class="bg-black/5 border border-black/10 p-3 rounded-lg">
+                    <div class="text-text-muted uppercase">API KEY STATUS</div>
+                    <div class="text-gray-900 font-bold text-[12px] mt-0.5">LOADED (.ENV)</div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[10px] text-text-muted pt-1">
+                <span>PING LATENCY: <strong id="engine-latency-display" class="text-gray-900 font-bold">18 MS</strong></span>
+                <span>QUOTA REMAINING: <strong class="text-brand-mint font-bold">UNLIMITED</strong></span>
+            </div>
+        </section>
+
+        <!-- HARDWARE & STORAGE ACCELERATION -->
+        <section class="glass-panel rounded-xl p-4 flex flex-col gap-3 font-mono text-[11px]">
+            <div class="flex items-center justify-between border-b border-black/10 pb-2.5">
+                <div class="flex items-center gap-2 text-gray-900 font-bold uppercase">
+                    <span class="material-symbols-outlined text-brand-mint text-[20px]">storage</span>
+                    <span>STORAGE & FFMPEG ACCELERATION</span>
+                </div>
+                <span class="text-text-muted text-[10px]">LOCAL DRIVE</span>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <div class="flex justify-between text-[10px]">
+                    <span class="text-text-muted">CACHE DISK STORAGE:</span>
+                    <span class="text-gray-900 font-bold">READY / OPTIMIZED</span>
+                </div>
+                <div class="w-full h-2 bg-black/5 border border-black/10 rounded-full overflow-hidden">
+                    <div class="w-[20%] h-full bg-brand-mint"></div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-black/5 p-3 rounded-lg border border-black/10 text-[10px] mt-1">
+                <div>
+                    <div class="text-gray-900 font-bold">FFMPEG TRANSCODER</div>
+                    <div class="text-text-muted">H.264 / PRORES ACCELERATED</div>
+                </div>
+                <span class="px-2.5 py-1 rounded bg-black/10 text-gray-900 font-bold text-[9px] uppercase">ACTIVE</span>
+            </div>
+        </section>
+
+        <!-- LIVE TERMINAL CONSOLE LOGS -->
+        <section class="glass-panel rounded-xl p-4 flex flex-col gap-2.5 font-mono text-[10px]">
+            <div class="flex items-center justify-between border-b border-black/10 pb-2 text-[11px]">
+                <div class="flex items-center gap-2 text-gray-900 font-bold uppercase">
+                    <span class="material-symbols-outlined text-brand-mint text-[18px]">terminal</span>
+                    <span>LIVE SYSTEM DIAGNOSTICS</span>
+                </div>
+                <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+            </div>
+
+            <div class="bg-black/10 border border-black/10 p-3.5 rounded-lg font-mono text-text-muted text-[11px] leading-relaxed flex flex-col gap-1.5 overflow-x-auto max-h-40">
+                <div class="text-brand-mint">[SYSTEM] Engine calibrated successfully. Server running on port 8000.</div>
+                <div class="text-gray-900">[INFO] Mounted static directories /clips and /frontend.</div>
+                <div class="text-gray-900">[INFO] Gemini API client initialized (google.genai SDK).</div>
+                <div class="text-gray-900">[INFO] FFmpeg executable detected in environment path.</div>
+                <div class="text-brand-mint">[TASK-MANAGER] Async Background Worker Queue: Active & ready.</div>
+            </div>
+        </section>
+
+    </div>
+
+</main>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-black/5 px-6 py-2.5">
+    <div class="max-w-md mx-auto flex items-center justify-between font-mono text-[10px]">
+        <a href="/index.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+            <span>UPLOAD</span>
+        </a>
+        <a href="/library.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">video_library</span>
+            <span>LIBRARY</span>
+        </a>
+        <a href="/presets.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">tune</span>
+            <span>PRESETS</span>
+        </a>
+        <a href="/engine.html" class="flex flex-col items-center gap-1 text-brand-mint font-bold">
+            <span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+            <span>ENGINE</span>
+        </a>
+    </div>
+</nav>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

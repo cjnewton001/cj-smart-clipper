@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+
+# Media Uploads & Rendered Clips
+uploads/*
+!uploads/.gitkeep
+clips/*
+!clips/.gitkeep
+*.mp4
+*.mov
+*.webm
+*.zip
+*.jpg
+!frontend/**

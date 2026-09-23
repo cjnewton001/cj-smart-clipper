@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart Clipper — Extraction Results</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                "brand-mint": "#00D670",
+                "brand-dark": "#F8FAFC",
+                "surface-card": "rgba(255, 255, 255, 0.85)",
+                "surface-border": "rgba(0, 0, 0, 0.08)",
+                "text-muted": "#64748B"
+              },
+              fontFamily: {
+                sans: ["Plus Jakarta Sans", "sans-serif"],
+                mono: ["Fira Code", "monospace"],
+                display: ["Outfit", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-gray-900 min-h-screen flex flex-col font-sans antialiased pb-32 selection:bg-brand-mint selection:text-white">
+
+<!-- TOP HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-3.5 glass-panel border-b border-black/5">
+    <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            <span class="font-display font-extrabold text-base text-gray-900 tracking-wider uppercase">HIGHLIGHT RESULTS</span>
+        </a>
+    </div>
+    <div class="w-8 h-8 rounded-full border border-black/10 bg-black/5 flex items-center justify-center text-text-muted hover:text-gray-900 cursor-pointer transition-colors">
+        <span class="material-symbols-outlined text-[18px]">person</span>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 w-full max-w-lg mx-auto px-4 pt-20 flex flex-col gap-4">
+
+    <!-- SUB HEADER STRIP -->
+    <div class="flex items-center justify-between font-mono text-[11px]">
+        <a href="/" class="px-3 py-1.5 rounded-lg glass-panel hover:border-black/10 text-gray-900 font-semibold flex items-center gap-1.5 transition-all text-[11px]">
+            <span class="material-symbols-outlined text-[14px]">cloud_upload</span>
+            <span>NEW UPLOAD</span>
+        </a>
+        <div id="clip-count-display" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 border border-brand-mint text-brand-mint font-bold text-[11px]">
+            <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+            <span id="clip-count-text">ANALYZING VIDEO...</span>
+        </div>
+    </div>
+
+    <!-- DYNAMIC PROCESSING META BOX -->
+    <section id="meta-box" class="glass-panel rounded-xl p-4 flex flex-col gap-3 font-mono text-[11px]">
+        <div class="flex items-center justify-between border-b border-black/10 pb-2.5">
+            <div id="status-badge" class="flex items-center gap-2 text-brand-mint font-bold tracking-wide">
+                <span id="status-icon" class="material-symbols-outlined text-[16px] animate-spin">progress_activity</span>
+                <span id="status-title">PROCESSING IN PROGRESS</span>
+            </div>
+            <div class="text-text-muted">TIME: <span id="duration-display" class="text-gray-900 font-medium">0.0S</span></div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-2 text-[10px]">
+            <div>
+                <div class="text-text-muted uppercase mb-0.5">SOURCE FILE</div>
+                <div id="source-file-display" class="text-gray-900 font-medium truncate">Locating...</div>
+                <div id="source-size-display" class="text-text-muted text-[9px]">CALCULATING...</div>
+            </div>
+            <div>
+                <div class="text-text-muted uppercase mb-0.5">AI ENGINE</div>
+                <div id="ai-engine-display" class="text-brand-mint font-bold">Gemini 3.6 Flash</div>
+                <div class="text-text-muted text-[9px]">HIGH ACCURACY</div>
+            </div>
+            <div>
+                <div class="text-text-muted uppercase mb-0.5">RENDER FORMAT</div>
+                <div class="text-gray-900 font-medium">9:16 HD MP4</div>
+                <div class="text-text-muted text-[9px]">REC.709 H264</div>
+            </div>
+        </div>
+
+        <div id="stage-box" class="bg-black/5 border border-black/10 rounded-lg px-3 py-2 flex items-center justify-between text-[10px]">
+            <div class="flex items-center gap-2 text-brand-mint">
+                <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+                <span id="stage-display">Connecting to Gemini AI pipeline...</span>
+            </div>
+            <span class="text-text-muted font-mono" id="pipeline-state-badge">ACTIVE</span>
+        </div>
+    </section>
+
+    <!-- CLIPS CONTAINER -->
+    <div id="clips-container" class="flex flex-col gap-5">
+        <!-- Dynamic Clip Cards Injected Here -->
+        <div class="flex flex-col items-center justify-center py-16 gap-3 glass-panel rounded-xl text-center font-mono">
+            <span class="material-symbols-outlined text-brand-mint text-[36px] animate-spin">progress_activity</span>
+            <p id="loading-stage-text" class="text-gray-900 text-[13px] uppercase font-bold tracking-wider">Analyzing video with Gemini...</p>
+            <p class="text-text-muted text-[11px]">Extracting high-engagement hooks & viral moments</p>
+        </div>
+    </div>
+
+</main>
+
+<!-- FIXED BOTTOM ACTION BAR -->
+<div class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-black/5 p-4">
+    <div class="max-w-lg mx-auto flex flex-col gap-2">
+        <button id="download-all-btn" disabled class="w-full bg-black/5 text-gray-400 font-display font-bold text-sm py-4 px-4 rounded-xl uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-not-allowed border border-black/10" type="button">
+            <span class="material-symbols-outlined text-[20px]">download_for_offline</span>
+            <span>BATCH DOWNLOAD ALL CLIPS</span>
+        </button>
+        <div class="flex items-center justify-center gap-1.5 font-mono text-[10px] text-text-muted">
+            <span class="material-symbols-outlined text-[14px] text-brand-mint">verified</span>
+            <span>EXPORT PIPELINE: H.264 MP4 ARCHIVE</span>
+        </div>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

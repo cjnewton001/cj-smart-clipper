@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart Clipper — Video Library</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                "brand-mint": "#00D670",
+                "brand-dark": "#F8FAFC",
+                "surface-card": "rgba(255, 255, 255, 0.85)",
+                "surface-border": "rgba(0, 0, 0, 0.08)",
+                "text-muted": "#64748B"
+              },
+              fontFamily: {
+                sans: ["Plus Jakarta Sans", "sans-serif"],
+                mono: ["Fira Code", "monospace"],
+                display: ["Outfit", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-gray-900 min-h-screen flex flex-col font-sans antialiased pb-28 selection:bg-brand-mint selection:text-white">
+
+<!-- TOP HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-3.5 glass-panel border-b border-black/5">
+    <div class="flex items-center gap-3">
+        <span class="font-display font-extrabold text-base tracking-wider text-gray-900 uppercase">SMART CLIPPER</span>
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-brand-mint">
+            <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+            <span class="font-mono text-[10px] font-bold tracking-wider text-brand-mint uppercase">LIBRARY ARCHIVE</span>
+        </div>
+    </div>
+    <div class="w-8 h-8 rounded-full border border-black/10 bg-black/5 flex items-center justify-center text-text-muted hover:text-gray-900 cursor-pointer transition-colors">
+        <span class="material-symbols-outlined text-[18px]">person</span>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 w-full max-w-lg mx-auto px-4 pt-20 flex flex-col gap-4">
+
+    <!-- SEARCH & FILTERS -->
+    <div class="flex flex-col gap-2 font-mono text-[11px]">
+        <div class="relative w-full">
+            <span class="material-symbols-outlined absolute left-3.5 top-3 text-text-muted text-[18px]">search</span>
+            <input type="text" placeholder="SEARCH SESSIONS OR CLIPS..." class="w-full glass-panel rounded-xl pl-10 pr-4 py-2.5 text-gray-900 placeholder-text-muted focus:border-brand-mint focus:outline-none text-[11px]"/>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="px-3 py-1.5 rounded-lg btn-mint font-bold text-[10px] uppercase text-white">ALL SESSIONS</button>
+            <button class="px-3 py-1.5 rounded-lg glass-panel hover:border-black/10 text-text-muted hover:text-gray-900 text-[10px] uppercase">RECENT</button>
+            <button class="px-3 py-1.5 rounded-lg glass-panel hover:border-black/10 text-text-muted hover:text-gray-900 text-[10px] uppercase">FAVORITES</button>
+        </div>
+    </div>
+
+    <!-- SESSIONS LIST -->
+    <div id="library-sessions-container" class="flex flex-col gap-4">
+        <!-- Dynamically loaded from /api/clips/sessions/list -->
+        <div class="flex flex-col items-center justify-center py-16 gap-3 glass-panel rounded-xl text-center font-mono">
+            <span class="material-symbols-outlined text-brand-mint text-[32px] animate-spin">progress_activity</span>
+            <p class="text-gray-900 text-[12px] uppercase font-bold tracking-wider">Loading video sessions...</p>
+        </div>
+    </div>
+
+</main>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-black/5 px-6 py-2.5">
+    <div class="max-w-md mx-auto flex items-center justify-between font-mono text-[10px]">
+        <a href="/index.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+            <span>UPLOAD</span>
+        </a>
+        <a href="/library.html" class="flex flex-col items-center gap-1 text-brand-mint font-bold">
+            <span class="material-symbols-outlined text-[20px]">video_library</span>
+            <span>LIBRARY</span>
+        </a>
+        <a href="/presets.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">tune</span>
+            <span>PRESETS</span>
+        </a>
+        <a href="/engine.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+            <span>ENGINE</span>
+        </a>
+    </div>
+</nav>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

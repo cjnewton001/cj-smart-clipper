@@ -1,0 +1,148 @@
+/* Smart Clipper — Premium Cyber Glass & Glow Design System */
+
+:root {
+    --bg-obsidian: #F8FAFC;
+    --card-glass: rgba(255, 255, 255, 0.85);
+    --card-glass-hover: rgba(255, 255, 255, 0.95);
+    --border-glass: rgba(0, 0, 0, 0.08);
+    --border-glass-light: rgba(0, 0, 0, 0.15);
+    --brand-mint: #00D670;
+    --brand-mint-glow: rgba(0, 214, 112, 0.25);
+    --brand-violet: #7828FF;
+    --brand-violet-glow: rgba(120, 40, 255, 0.1);
+    --text-muted: #64748B;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background-color: var(--brand-mint);
+    color: #000000;
+}
+
+body {
+    background-color: var(--bg-obsidian);
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(120, 40, 255, 0.05) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 214, 112, 0.05) 0px, transparent 50%),
+        radial-gradient(at 50% 30%, rgba(255, 255, 255, 0.8) 0px, transparent 100%);
+    background-attachment: fixed;
+    color: #0F172A;
+    min-height: 100vh;
+}
+
+/* Glassmorphism utility cards */
+.glass-panel {
+    background: var(--card-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-hover {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+    background: var(--card-glass-hover);
+    border-color: var(--border-glass-light);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.1), 0 0 20px rgba(0, 214, 112, 0.1);
+}
+
+/* Glowing Mint Buttons */
+.btn-mint {
+    background: linear-gradient(135deg, #00D670 0%, #00B25E 100%);
+    color: #FFFFFF;
+    font-weight: 800;
+    box-shadow: 0 0 20px var(--brand-mint-glow);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-mint:hover {
+    background: linear-gradient(135deg, #00E67A 0%, #00C467 100%);
+    box-shadow: 0 0 30px rgba(0, 214, 112, 0.4);
+    transform: scale(1.01);
+}
+.btn-mint:active {
+    transform: scale(0.99);
+}
+
+/* Ambient Viewport Glow */
+.ambient-glow-box {
+    position: relative;
+}
+.ambient-glow-box::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, var(--brand-mint-glow), var(--brand-violet-glow));
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.6;
+    filter: blur(12px);
+    transition: opacity 0.3s ease;
+}
+.ambient-glow-box:hover::before {
+    opacity: 1;
+    filter: blur(16px);
+}
+
+/* Equalizer Bars Animation */
+@keyframes eq-bounce {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+}
+.eq-bar {
+    width: 3px;
+    background-color: var(--brand-mint);
+    border-radius: 2px;
+    animation: eq-bounce 1.2s infinite ease-in-out;
+}
+.eq-bar:nth-child(1) { animation-delay: 0.0s; }
+.eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.eq-bar:nth-child(3) { animation-delay: 0.4s; }
+.eq-bar:nth-child(4) { animation-delay: 0.1s; }
+
+/* Pulse Glow Animation */
+@keyframes mint-pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(0,214,112,0.3); }
+    50% { box-shadow: 0 0 25px rgba(0,214,112,0.7); }
+}
+.pulse-mint {
+    animation: mint-pulse 2s infinite ease-in-out;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.8);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--brand-mint);
+}
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}

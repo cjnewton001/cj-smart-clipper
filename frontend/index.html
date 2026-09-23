@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Smart Clipper — AI Video Ingestion</title>
+    <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols Outlined -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                "brand-mint": "#00D670",
+                "brand-dark": "#F8FAFC",
+                "surface-card": "rgba(255, 255, 255, 0.85)",
+                "surface-border": "rgba(0, 0, 0, 0.08)",
+                "text-muted": "#64748B"
+              },
+              fontFamily: {
+                sans: ["Plus Jakarta Sans", "sans-serif"],
+                mono: ["Fira Code", "monospace"],
+                display: ["Outfit", "sans-serif"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-gray-900 min-h-screen flex flex-col font-sans antialiased pb-28 selection:bg-brand-mint selection:text-white">
+
+<!-- TOP HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-3.5 glass-panel border-b border-black/5">
+    <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-brand-mint flex items-center justify-center text-brand-mint">
+            <span class="material-symbols-outlined text-[20px]">auto_videocam</span>
+        </div>
+        <span class="font-display font-extrabold text-base tracking-wider text-gray-900 uppercase">SMART CLIPPER</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-brand-mint">
+            <span class="w-2 h-2 rounded-full bg-brand-mint pulse-mint"></span>
+            <span class="font-mono text-[10px] font-bold tracking-wider text-brand-mint uppercase">GEMINI 3.6 READY</span>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 w-full max-w-lg mx-auto px-4 pt-20 flex flex-col gap-5">
+
+    <!-- HERO INTRODUCTION BAR -->
+    <div class="glass-panel rounded-xl p-4 flex flex-col gap-1 border border-black/5">
+        <h1 class="font-display font-extrabold text-lg text-gray-900 leading-snug">
+            Turn Long Videos into Viral Shorts
+        </h1>
+        <p class="font-sans text-[12px] text-text-muted leading-relaxed">
+            Upload podcasts, unboxings, or gameplay. Gemini AI automatically pinpoints hooks and renders vertical highlights.
+        </p>
+    </div>
+
+    <!-- UPLOAD FORM WRAPPER -->
+    <div id="upload-form" class="flex flex-col gap-4">
+
+        <!-- MODE SELECTOR STRIP -->
+        <div class="glass-panel rounded-xl p-1 flex items-center font-display text-sm relative mb-2">
+            <button id="mode-ai-btn" class="flex-1 py-2 text-center rounded bg-brand-mint text-white font-bold uppercase transition-all shadow-md" type="button">
+                AI AUTO DETECT
+            </button>
+            <button id="mode-manual-btn" class="flex-1 py-2 text-center rounded text-text-muted hover:text-gray-900 font-semibold uppercase transition-all" type="button">
+                MANUAL CUT
+            </button>
+        </div>
+
+        <!-- DROPZONE BOX WITH GLOW & BRACKETS -->
+        <section class="relative glass-panel glass-panel-hover p-8 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer group" id="dropzone">
+            <input id="video-file" accept="video/mp4,video/quicktime,video/webm,video/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20" type="file"/>
+
+            <!-- Center Animated Icon -->
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-brand-mint flex items-center justify-center mb-4 group-hover:scale-110 transition-all shadow-[0_0_20px_rgba(0,214,112,0.15)]">
+                <span class="material-symbols-outlined text-brand-mint text-[32px]">cloud_upload</span>
+            </div>
+
+            <!-- Title & Subtitle -->
+            <h2 id="file-name-label" class="font-display text-base font-bold text-gray-900 tracking-wide uppercase mb-1">
+                Drop Video Here or Browse File
+            </h2>
+            <p class="font-mono text-[11px] text-text-muted uppercase tracking-wider mb-5">
+                MP4 / MOV / WEBM • UP TO 2.0 GB
+            </p>
+
+            <!-- File Selected Status Bar -->
+            <div class="w-full bg-black/5 border border-black/10 rounded-lg px-3.5 py-2.5 flex items-center justify-between font-mono text-[11px]">
+                <div class="flex items-center gap-2 text-gray-900 truncate">
+                    <span class="material-symbols-outlined text-text-muted text-[16px]">movie</span>
+                    <span id="file-status-text" class="truncate font-medium">NO FILE LOADED</span>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-black/5 text-text-muted text-[10px] uppercase font-bold tracking-wider">WAITING</span>
+            </div>
+        </section>
+
+        <!-- AI MODE SETTINGS -->
+        <div id="ai-settings-container" class="flex flex-col gap-4">
+            <!-- ASPECT RATIO PRESET SELECTOR -->
+            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between font-mono text-[11px]">
+                    <span class="text-gray-900 font-bold tracking-wide uppercase">ASPECT RATIO FORMAT</span>
+                    <span class="text-brand-mint font-bold text-[10px]">9:16 RECOMMENDED</span>
+                </div>
+
+                <input type="hidden" id="aspect-ratio" value="9:16">
+
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-value="9:16" class="aspect-opt flex flex-col items-center justify-center py-2.5 rounded-lg bg-brand-mint text-white border border-brand-mint font-bold transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px] mb-0.5">crop_portrait</span>
+                        <span>9:16</span>
+                    </button>
+                    <button type="button" data-value="16:9" class="aspect-opt flex flex-col items-center justify-center py-2.5 rounded-lg bg-surface-card text-text-muted border border-surface-border font-semibold transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px] mb-0.5">crop_landscape</span>
+                        <span>16:9</span>
+                    </button>
+                    <button type="button" data-value="original" class="aspect-opt flex flex-col items-center justify-center py-2.5 rounded-lg bg-surface-card text-text-muted border border-surface-border font-semibold transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px] mb-0.5">crop_square</span>
+                        <span>ORIG.</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- EXTRACT TARGET QUANTITY -->
+            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between font-mono text-[11px]">
+                    <span class="text-gray-900 font-bold tracking-wide uppercase">TARGET HIGHLIGHT CLIPS</span>
+                    <span class="text-brand-mint font-bold text-[10px]">AI DETECT</span>
+                </div>
+
+                <input type="hidden" id="num-clips" value="auto">
+
+                <!-- Segmented Control Grid -->
+                <div class="grid grid-cols-5 gap-1.5 bg-black/5 p-1.5 rounded-lg border border-black/10">
+                    <button class="clip-opt py-1.5 rounded bg-brand-mint text-white font-bold shadow text-center transition-all cursor-pointer" data-value="auto" type="button">AUTO</button>
+                    <button class="clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="2" type="button">2</button>
+                    <button class="clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="3" type="button">3</button>
+                    <button class="clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="4" type="button">4</button>
+                    <button class="clip-opt py-1.5 rounded text-text-muted font-semibold text-center transition-all cursor-pointer" data-value="5" type="button">5</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- MANUAL CUT SETTINGS (Hidden initially) -->
+        <div id="manual-settings-container" class="hidden flex-col gap-4">
+            <section class="glass-panel rounded-xl p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between font-mono text-[11px] mb-1">
+                    <span class="text-gray-900 font-bold tracking-wide uppercase">ADD MANUAL CUT</span>
+                    <span class="text-brand-mint font-bold text-[10px]">MM:SS / HH:MM:SS</span>
+                </div>
+                
+                <div class="flex items-center gap-2 font-mono text-[11px]">
+                    <div class="flex flex-col gap-1.5 flex-1">
+                        <label class="text-text-muted uppercase text-[9px] font-bold">START TIME</label>
+                        <input type="text" id="manual-start" placeholder="00:00" pattern="[0-9:]*" title="Enter time in MM:SS or HH:MM:SS format" class="w-full bg-black/5 border border-black/10 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-brand-mint transition-colors">
+                    </div>
+                    <div class="flex flex-col gap-1.5 flex-1">
+                        <label class="text-text-muted uppercase text-[9px] font-bold">END TIME</label>
+                        <input type="text" id="manual-end" placeholder="00:30" pattern="[0-9:]*" title="Enter time in MM:SS or HH:MM:SS format" class="w-full bg-black/5 border border-black/10 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:border-brand-mint transition-colors">
+                    </div>
+                </div>
+                
+                <button type="button" id="add-manual-cut-btn" class="mt-1 w-full bg-gray-900 hover:bg-gray-800 text-white font-display font-bold text-xs py-2.5 rounded-lg uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md">
+                    <span class="material-symbols-outlined text-[16px]">add</span>
+                    <span>ADD CUT TIMESTAMPS</span>
+                </button>
+                
+                <!-- Added Cuts List -->
+                <div class="mt-2 border-t border-black/10 pt-3">
+                    <div class="text-text-muted uppercase text-[10px] font-bold mb-2 flex items-center justify-between">
+                        <span>TIMESTAMPS QUEUED</span>
+                        <span id="manual-cut-count" class="bg-black/5 px-1.5 py-0.5 rounded text-gray-900">0</span>
+                    </div>
+                    <div id="manual-cuts-list" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                        <!-- Items injected here by JS -->
+                        <p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No cuts added yet.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- PRIMARY CTA BUTTON -->
+        <button id="upload-submit-btn" class="w-full btn-mint font-display font-extrabold text-sm py-4 px-6 rounded-xl uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer text-white" type="button">
+            <span class="material-symbols-outlined text-[20px]">bolt</span>
+            <span id="submit-btn-text">GENERATE VIRAL CLIPS</span>
+            <span class="material-symbols-outlined text-[20px] ml-auto">arrow_forward</span>
+        </button>
+
+    </div>
+
+    <!-- PROCESSING STATE (Hidden initially) -->
+    <div id="processing-state" class="hidden glass-panel rounded-xl py-16 px-4 flex flex-col items-center justify-center gap-4 text-center">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-brand-mint flex items-center justify-center pulse-mint">
+            <span class="material-symbols-outlined text-brand-mint text-[32px] animate-spin">progress_activity</span>
+        </div>
+        <h2 id="progress-text" class="font-display text-base font-bold text-gray-900 uppercase tracking-widest mt-2">
+            Uploading...
+        </h2>
+        <div class="w-64 h-1.5 bg-black/5 rounded-full overflow-hidden border border-black/10 relative">
+            <div class="absolute top-0 left-0 bottom-0 w-1/2 bg-brand-mint animate-[bounce_1.5s_infinite_ease-in-out]"></div>
+        </div>
+        <p class="font-mono text-[10px] text-text-muted uppercase tracking-wider mt-1">
+            GEMINI MULTIMODAL INGESTION IN PROGRESS
+        </p>
+    </div>
+
+</main>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 glass-panel border-t border-black/5 px-6 py-2.5">
+    <div class="max-w-md mx-auto flex items-center justify-between font-mono text-[10px]">
+        <a href="/" class="flex flex-col items-center gap-1 text-brand-mint font-bold">
+            <span class="material-symbols-outlined text-[20px]">cloud_upload</span>
+            <span>UPLOAD</span>
+        </a>
+        <a href="/library.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">video_library</span>
+            <span>LIBRARY</span>
+        </a>
+        <a href="/presets.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">tune</span>
+            <span>PRESETS</span>
+        </a>
+        <a href="/engine.html" class="flex flex-col items-center gap-1 text-text-muted hover:text-gray-900 transition-colors">
+            <span class="material-symbols-outlined text-[20px]">settings_input_component</span>
+            <span>ENGINE</span>
+        </a>
+    </div>
+</nav>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
