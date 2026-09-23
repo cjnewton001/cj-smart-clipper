@@ -26,10 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const manualEndInput = document.getElementById('manual-end');
         const manualCutsList = document.getElementById('manual-cuts-list');
         const manualCutCount = document.getElementById('manual-cut-count');
+        const manualClipButtons = document.querySelectorAll('.manual-clip-opt');
+        const manualClipTargetInput = document.getElementById('manual-clip-target');
+        const manualTargetStatus = document.getElementById('manual-target-status');
         const emptyCutsMsg = document.getElementById('empty-cuts-msg');
 
         let currentMode = 'ai'; // 'ai' or 'manual'
         let manualCuts = [];
+
+        const getManualClipTarget = () => Number.parseInt(manualClipTargetInput?.value || '1', 10);
 
         // Mode Toggling Logic
         if (modeAiBtn && modeManualBtn) {
@@ -62,11 +67,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (manualStartInput) manualStartInput.addEventListener('input', restrictToTimeFormat);
         if (manualEndInput) manualEndInput.addEventListener('input', restrictToTimeFormat);
 
+        // Manual clip count selector
+        if (manualClipButtons.length && manualClipTargetInput) {
+            manualClipButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    manualClipButtons.forEach(button => {
+                        button.classList.remove('bg-brand-mint', 'text-white', 'font-bold', 'shadow');
+                        button.classList.add('text-text-muted', 'font-semibold');
+                        button.setAttribute('aria-pressed', 'false');
+                    });
+                    btn.classList.add('bg-brand-mint', 'text-white', 'font-bold', 'shadow');
+                    btn.classList.remove('text-text-muted', 'font-semibold');
+                    btn.setAttribute('aria-pressed', 'true');
+                    manualClipTargetInput.value = btn.dataset.value;
+                    updateManualCutsUI();
+                });
+            });
+        }
+
         // Add Manual Cut Logic
         if (addCutBtn) {
             addCutBtn.addEventListener('click', () => {
                 const start = manualStartInput.value.trim();
                 const end = manualEndInput.value.trim();
+
+                if (manualCuts.length >= getManualClipTarget()) {
+                    alert('You have added all selected clips. Choose a higher clip count or remove a timestamp range.');
+                    return;
+                }
                 
                 // Basic validation (regex for MM:SS or HH:MM:SS)
                 const timeRegex = /^(\d{1,2}:)?([0-5]?\d):([0-5]?\d)$/;
@@ -91,7 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
         window.removeCut = removeCut;
 
         function updateManualCutsUI() {
+            const target = getManualClipTarget();
             if (manualCutCount) manualCutCount.textContent = manualCuts.length;
+            if (manualTargetStatus) manualTargetStatus.textContent = `${manualCuts.length} OF ${target} ADDED`;
+            if (addCutBtn) {
+                const targetReached = manualCuts.length >= target;
+                addCutBtn.disabled = targetReached;
+                addCutBtn.classList.toggle('opacity-50', targetReached);
+                addCutBtn.classList.toggle('cursor-not-allowed', targetReached);
+                addCutBtn.querySelector('span:last-child').textContent = targetReached ? 'ALL CLIPS ADDED' : 'ADD CUT TIMESTAMPS';
+            }
             if (manualCuts.length === 0) {
                 manualCutsList.innerHTML = '<p class="text-center text-[10px] text-text-muted py-2 italic" id="empty-cuts-msg">No cuts added yet.</p>';
             } else {
@@ -171,6 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (currentMode === 'manual' && manualCuts.length === 0) {
                     alert('Please add at least one timestamp range before exporting.');
+                    return;
+                }
+
+                if (currentMode === 'manual' && manualCuts.length !== getManualClipTarget()) {
+                    alert(`Please add exactly ${getManualClipTarget()} timestamp range${getManualClipTarget() === 1 ? '' : 's'} before exporting.`);
                     return;
                 }
 
@@ -689,8 +731,6 @@ function renderClips(clips, zipUrl = null) {
     } else {
         if (clipCountText) clipCountText.textContent = 'RESULTS / 0 CLIPS';
         clipsContainer.innerHTML = '<p class="font-mono text-text-muted text-center py-8">No clips were generated. Please try again.</p>';
-    }
-}
     }
 }
 
